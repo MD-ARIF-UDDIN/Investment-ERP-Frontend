@@ -195,7 +195,7 @@ const Dashboard = () => {
                     value={`${summary.totalWithdrawals.toLocaleString()} ৳`}
                     icon={HandCoins}
                     colorClass="text-orange-600"
-                    subtitle="সদস্যদের প্রদান করা হয়েছে"
+                    subtitle="সদস্য ও প্রকল্পে প্রদানকৃত"
                 />
                 <StatCard
                     title="সফল প্রকল্প"
