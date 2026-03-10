@@ -129,6 +129,9 @@ const Dashboard = () => {
             {/* Header with Title & Cash Balance */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-gray-100 font-bengali">
                 <div className="space-y-1">
+                    <div className="lg:hidden flex items-center gap-2 mb-1">
+                        <span className="text-xs font-bold text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full font-bengali">স্বাগতম, {user?.name}</span>
+                    </div>
                     <h1 className="text-4xl font-black text-gray-900 tracking-tight">সারসংক্ষেপ ড্যাশবোর্ড</h1>
                     <p className="text-gray-500 font-medium">আপনার সমবায়ের আর্থিক এবং প্রকল্পের বর্তমান অবস্থা এখানে দেখুন</p>
                 </div>
