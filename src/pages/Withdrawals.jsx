@@ -115,7 +115,7 @@ const Withdrawals = () => {
             date: new Date(w.date).toLocaleDateString('bn-BD'),
             memberName: w.type === 'Project Investment' ? w.project?.name : w.member?.name,
             memberId: w.type === 'Project Investment' ? 'প্রকল্প' : w.member?.memberId,
-            type: w.type === 'Profit' ? 'লভ্যাংশ' : w.type === 'Project Investment' ? 'প্রকল্প বিনিয়োগ' : 'সাধারণ',
+            type: w.type === 'Profit' ? 'লভ্যাংশ' : w.type === 'Project Investment' ? 'প্রকল্প বিনিয়োগ' : w.type === 'Expense' ? 'খরচ' : 'সাধারণ',
             amount: w.amount,
             reason: w.reason || '-'
         }));
@@ -245,17 +245,24 @@ const Withdrawals = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-base font-medium text-gray-900">
                                             {withdrawal.type === 'Project Investment' ? (
                                                 <span className="text-purple-700">{withdrawal.project?.name} (প্রকল্প)</span>
+                                            ) : withdrawal.type === 'Expense' ? (
+                                                <span className="text-orange-700">খরচ এন্ট্রি</span>
                                             ) : (
                                                 <span>{withdrawal.member?.name} ({withdrawal.member?.memberId})</span>
                                             )}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-base font-bold text-red-600">{withdrawal.amount.toLocaleString()}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2 py-1 text-xs font-bold rounded-full ${withdrawal.type === 'Profit' ? 'bg-green-100 text-green-800' :
+                                            <span className={`px-2 py-1 text-xs font-bold rounded-full ${
+                                                withdrawal.type === 'Profit' ? 'bg-green-100 text-green-800' :
                                                 withdrawal.type === 'Project Investment' ? 'bg-purple-100 text-purple-800' :
-                                                    'bg-gray-100 text-gray-800'
-                                                }`}>
-                                                {withdrawal.type === 'Profit' ? 'লভ্যাংশ' : withdrawal.type === 'Project Investment' ? 'প্রকল্প বিনিয়োগ' : 'সাধারণ'}
+                                                withdrawal.type === 'Expense' ? 'bg-orange-100 text-orange-800' :
+                                                'bg-gray-100 text-gray-800'
+                                            }`}>
+                                                {withdrawal.type === 'Profit' ? 'লভ্যাংশ'
+                                                    : withdrawal.type === 'Project Investment' ? 'প্রকল্প বিনিয়োগ'
+                                                    : withdrawal.type === 'Expense' ? 'খরচ'
+                                                    : 'সাধারণ'}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-base text-gray-700 font-bengali">{withdrawal.reason || '-'}</td>
@@ -264,7 +271,7 @@ const Withdrawals = () => {
                                             <div>তারিখ: {new Date(withdrawal.createdAt).toLocaleString('bn-BD', { dateStyle: 'short', timeStyle: 'short' })}</div>
                                             {withdrawal.updatedBy && <div className="text-blue-400">আপডেট: {withdrawal.updatedBy?.name}</div>}
                                         </td>
-                                        {user?.role === 'Admin' && (
+                                        {user?.role === 'Admin' && withdrawal.type !== 'Expense' && (
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <button onClick={() => handleEdit(withdrawal)} className="text-indigo-600 hover:text-indigo-900 mx-2" title="Edit">
                                                     <Edit2 size={20} />
@@ -272,6 +279,11 @@ const Withdrawals = () => {
                                                 <button onClick={() => setDeleteModal({ isOpen: true, id: withdrawal._id })} className="text-red-600 hover:text-red-900 mx-2" title="Delete">
                                                     <Trash2 size={20} />
                                                 </button>
+                                            </td>
+                                        )}
+                                        {user?.role === 'Admin' && withdrawal.type === 'Expense' && (
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-xs text-gray-400 font-bengali italic">
+                                                খরচ থেকে স্বয়ংক্রিয়
                                             </td>
                                         )}
                                     </tr>

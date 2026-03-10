@@ -10,7 +10,8 @@ import { exportToPDF, exportToExcel } from '../utils/exportUtils';
 const Reports = () => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('audit'); // 'audit', 'profit', 'ledger', or 'project'
+    const [activeTab, setActiveTab] = useState('monthly'); // 'monthly', 'audit', 'profit', 'ledger', or 'project'
+    const [isClearLogsModalOpen, setIsClearLogsModalOpen] = useState(false);
     const { user } = useContext(AuthContext);
     const { showLoading, hideLoading } = useLoading();
 
@@ -35,6 +36,7 @@ const Reports = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [projectReport, setProjectReport] = useState([]);
+    const [monthlyReport, setMonthlyReport] = useState({ rows: [], totals: {}, dailyBreakdown: null });
     const [showMobileFilters, setShowMobileFilters] = useState(false);
 
     const fetchLogs = async (page = 1) => {
@@ -47,6 +49,21 @@ const Reports = () => {
             setPagination({ page: data.page, pages: data.pages, total: data.total });
         } catch {
             toast.error('অডিট লগ লোড করতে সমস্যা হয়েছে');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleClearLogs = async () => {
+        try {
+            setLoading(true);
+            await api.delete('/logs');
+            toast.success('সব অডিট লগ মুছে ফেলা হয়েছে');
+            setLogs([]);
+            setPagination({ page: 1, pages: 1, total: 0 });
+            setIsClearLogsModalOpen(false);
+        } catch (error) {
+            toast.error('লগ মুছতে সমস্যা হয়েছে');
         } finally {
             setLoading(false);
         }
@@ -113,11 +130,28 @@ const Reports = () => {
         }
     };
 
+    const fetchMonthlyReport = async () => {
+        try {
+            setLoading(true);
+            let url = `/reports/monthly?mode=${filterType === 'month' ? 'single' : 'all'}`;
+            if (filterType === 'month') {
+                url += `&month=${selectedMonth}&year=${selectedYear}`;
+            }
+            const { data } = await api.get(url);
+            setMonthlyReport(data);
+        } catch (error) {
+            toast.error('মাসিক রিপোর্ট লোড করতে সমস্যা হয়েছে');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (activeTab === 'audit') fetchLogs();
         else if (activeTab === 'profit') fetchProfitData();
         else if (activeTab === 'ledger') fetchLedgerData();
         else if (activeTab === 'project') fetchProjectReport();
+        else if (activeTab === 'monthly') fetchMonthlyReport();
     }, [user, activeTab, selectedMonth, selectedYear, filterType, startDate, endDate]);
 
     const getActionText = (action) => {
@@ -280,10 +314,11 @@ const Reports = () => {
                 <h1 className="text-2xl font-black text-gray-900 font-bengali">রিপোর্ট এবং এনালিটিক্স</h1>
                 <div className="flex bg-gray-100/50 p-1 rounded-2xl overflow-x-auto no-scrollbar">
                     {[
-                        { id: 'audit', label: 'অডিট লগ' },
+                        { id: 'monthly', label: 'মাসিক রিপোর্ট' },
                         { id: 'profit', label: 'লভ্যাংশ রিপোর্ট' },
                         { id: 'ledger', label: 'সদস্য লেজার' },
-                        { id: 'project', label: 'প্রকল্প রিপোর্ট' }
+                        { id: 'project', label: 'প্রকল্প রিপোর্ট' },
+                        { id: 'audit', label: 'অডিট লগ' }
                     ].map(tab => (
                         <button
                             key={tab.id}
@@ -300,7 +335,15 @@ const Reports = () => {
                 <div className="bg-white shadow rounded-lg overflow-hidden">
                     <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                         <h2 className="font-black text-gray-700 font-bengali">সিস্টেম অ্যাক্টিভিটি লগ (সর্বশেষ)</h2>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
+                            {user?.role === 'Admin' && (
+                                <button
+                                    onClick={() => setIsClearLogsModalOpen(true)}
+                                    className="flex-1 sm:flex-none justify-center bg-red-100 text-red-700 hover:bg-red-200 px-4 py-2 rounded-xl flex items-center gap-2 text-sm transition-all font-bengali active:scale-95 font-bold"
+                                >
+                                    সব মুছে ফেলুন
+                                </button>
+                            )}
                             <button
                                 onClick={() => exportLogs('excel')}
                                 className="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm transition-all shadow-lg shadow-emerald-100 font-bengali active:scale-95"
@@ -798,6 +841,137 @@ const Reports = () => {
                     )}
                 </div>
             )}
+
+            {/* Monthly Report View */}
+            {activeTab === 'monthly' && (
+                <div className="space-y-6">
+                    {/* Filters for Monthly */}
+                    <div className="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100 gap-4">
+                        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                            <div className="flex bg-gray-100 p-1 rounded-lg">
+                                <button
+                                    onClick={() => setFilterType('all')}
+                                    className={`px-4 py-2 rounded-md text-sm font-bold transition-all font-bengali ${filterType === 'all' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    সকল মাস
+                                </button>
+                                <button
+                                    onClick={() => setFilterType('month')}
+                                    className={`px-4 py-2 rounded-md text-sm font-bold transition-all font-bengali ${filterType === 'month' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                >
+                                    নির্দিষ্ট মাস
+                                </button>
+                            </div>
+
+                            {filterType === 'month' && (
+                                <div className="flex items-center gap-2">
+                                    <select
+                                        value={selectedMonth}
+                                        onChange={(e) => setSelectedMonth(e.target.value)}
+                                        className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-600 font-bengali"
+                                    >
+                                        <option value="1">জানুয়ারি</option>
+                                        <option value="2">ফেব্রুয়ারি</option>
+                                        <option value="3">মার্চ</option>
+                                        <option value="4">এপ্রিল</option>
+                                        <option value="5">মে</option>
+                                        <option value="6">জুন</option>
+                                        <option value="7">জুলাই</option>
+                                        <option value="8">আগস্ট</option>
+                                        <option value="9">সেপ্টেম্বর</option>
+                                        <option value="10">অক্টোবর</option>
+                                        <option value="11">নভেম্বর</option>
+                                        <option value="12">ডিসেম্বর</option>
+                                    </select>
+                                    <select
+                                        value={selectedYear}
+                                        onChange={(e) => setSelectedYear(e.target.value)}
+                                        className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-600 font-bengali"
+                                    >
+                                        {Array.from({ length: 5 }, (_, i) => (
+                                            <option key={i} value={new Date().getFullYear() - i}>
+                                                {new Date().getFullYear() - i}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {loading ? (
+                        <div className="p-16 text-center text-gray-400 font-bengali">লোড হচ্ছে...</div>
+                    ) : (
+                        <div className="bg-white shadow rounded-lg overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50 font-bengali">
+                                        <tr>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-gray-700 tracking-wider">মাস ও বছর</th>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-green-700 tracking-wider">সদস্য জমা</th>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-emerald-700 tracking-wider">প্রকল্প আয়</th>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-blue-700 tracking-wider">মোট লাভ</th>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-red-700 tracking-wider">সদস্য উত্তোলন</th>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-orange-700 tracking-wider">প্রকল্পে বিনিয়োগ</th>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-rose-700 tracking-wider">অন্যান্য খরচ</th>
+                                            <th className="px-6 py-4 text-left text-sm font-bold text-indigo-700 tracking-wider">মোট খরচ</th>
+                                            <th className="px-6 py-4 text-left text-sm font-black text-gray-900 tracking-wider">নীট ব্যালেন্স</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white divide-y divide-gray-200 font-bengali">
+                                        {monthlyReport?.rows?.map((row, idx) => {
+                                            const monthNames = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন", "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"];
+                                            const monthName = monthNames[row.month - 1];
+                                            return (
+                                                <tr key={idx} className="hover:bg-gray-50 border-b border-gray-100">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{monthName} {row.year}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">{row.memberDeposit?.toLocaleString() || '0'}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-emerald-600 font-medium">{row.projectIncome?.toLocaleString() || '0'}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-bold bg-blue-50/30">{(row.profit || 0).toLocaleString()}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">{row.memberWithdrawal?.toLocaleString() || '0'}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600 font-medium">{row.projectInvestment.toLocaleString()}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-rose-600 font-medium">{row.expense.toLocaleString()}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-bold bg-indigo-50/30">{row.totalOutflow.toLocaleString()}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-gray-900 bg-gray-50">{row.net.toLocaleString()}৳</td>
+                                                </tr>
+                                            );
+                                        })}
+                                        {(!monthlyReport?.rows || monthlyReport.rows.length === 0) && (
+                                            <tr>
+                                                <td colSpan="9" className="px-6 py-8 text-center text-gray-500 font-bengali">কোন তথ্য পাওয়া যায়নি</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                    {monthlyReport?.rows && monthlyReport.rows.length > 0 && (
+                                        <tfoot className="bg-gray-50 font-bold font-bengali border-t-2 border-gray-300">
+                                            <tr>
+                                                <td className="px-6 py-4">সর্বমোট</td>
+                                                <td className="px-6 py-4 text-green-700">{monthlyReport.totals?.memberDeposit?.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 text-emerald-700">{monthlyReport.totals?.projectIncome?.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 text-blue-700 font-black">{monthlyReport.totals?.profit?.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 text-red-700">{monthlyReport.totals?.memberWithdrawal?.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 text-orange-700">{monthlyReport.totals?.projectInvestment?.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 text-rose-700">{monthlyReport.totals?.expense?.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 text-indigo-700 font-black">{monthlyReport.totals?.totalOutflow?.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 text-gray-900 font-black text-base">{monthlyReport.totals?.net?.toLocaleString()}৳</td>
+                                            </tr>
+                                        </tfoot>
+                                    )}
+                                </table>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            <ConfirmModal
+                isOpen={isClearLogsModalOpen}
+                onClose={() => setIsClearLogsModalOpen(false)}
+                onConfirm={handleClearLogs}
+                title="সব লগ মুছে ফেলুন"
+                message="আপনি কি নিশ্চিত যে আপনি সিস্টেমে থাকা সকল অডিট লগ স্থায়ীভাবে মুছে ফেলতে চান? এই অ্যাকশনটি ফিরিয়ে আনা সম্ভব নয়।"
+            />
+
         </div>
     );
 };
