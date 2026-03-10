@@ -1,3 +1,4 @@
+import React, { useContext } from 'react';
 import { Menu, User, ChevronDown } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 

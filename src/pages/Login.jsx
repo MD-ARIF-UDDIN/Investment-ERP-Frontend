@@ -63,7 +63,7 @@ const Login = () => {
                         <h2 className="text-4xl font-black text-gray-900 tracking-tight mb-2">
                             স্বপ্নের বাতিঘর
                         </h2>
-                        <p className="text-gray-500 font-medium">নিরাপদ লগইন সেশন শুরু করুন</p>
+                        <p className="text-gray-500 font-medium">লগইন সেশন শুরু করুন</p>
                     </div>
 
                     <form className="space-y-6" onSubmit={handleSubmit}>
@@ -122,7 +122,7 @@ const Login = () => {
 
                     <div className="mt-10 text-center space-y-2">
                         <p className="text-xs text-gray-400 font-medium tracking-widest uppercase">
-                            Society Management System v1.0
+                            Management System v1.0
                         </p>
                         <p className="text-[10px] text-gray-400 font-medium">
                             Developed by: <span className="text-gray-500 font-bold text-[11px]">Md Arif Uddin</span>, Software Engineer. Contact: <span className="text-gray-500 font-bold">01825334505</span>
