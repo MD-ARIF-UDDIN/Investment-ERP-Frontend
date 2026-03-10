@@ -27,14 +27,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
     const navItems = [
         { name: 'ড্যাশবোর্ড', path: '/', icon: <LayoutDashboard size={24} />, roles: ['Admin', 'Member'] },
-        { name: 'সদস্যগণ', path: '/members', icon: <Users size={24} />, roles: ['Admin'] },
+        { name: 'সদস্যগণ', path: '/members', icon: <Users size={24} />, roles: ['Admin', 'Member'] },
         { name: 'জমা', path: '/deposits', icon: <ArrowDownToLine size={24} />, roles: ['Admin', 'Member'] },
         { name: 'উত্তোলন', path: '/withdrawals', icon: <ArrowUpFromLine size={24} />, roles: ['Admin', 'Member'] },
         { name: 'প্রকল্প / বিনিয়োগ', path: '/projects', icon: <Briefcase size={24} />, roles: ['Admin', 'Member'] },
-        { name: 'খরচ', path: '/expenses', icon: <Wallet size={24} />, roles: ['Admin'] },
-        { name: 'লভ্যাংশ বণ্টন', path: '/distributions', icon: <Coins size={24} />, roles: ['Admin'] },
-        { name: 'রিপোর্ট', path: '/reports', icon: <FileText size={24} />, roles: ['Admin'] },
-        { name: 'ব্যবহারকারী', path: '/users', icon: <UserCog size={24} />, roles: ['Admin'] },
+        { name: 'খরচ', path: '/expenses', icon: <Wallet size={24} />, roles: ['Admin', 'Member'] },
+        { name: 'লভ্যাংশ বণ্টন', path: '/distributions', icon: <Coins size={24} />, roles: ['Admin', 'Member'] },
+        { name: 'রিপোর্ট', path: '/reports', icon: <FileText size={24} />, roles: ['Admin', 'Member'] },
+        { name: 'ব্যবহারকারী', path: '/users', icon: <UserCog size={24} />, roles: ['Admin', 'Member'] },
     ];
 
     return (

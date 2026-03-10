@@ -8,7 +8,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import Modal from '../components/Modal';
 import { exportToPDF, exportToExcel } from '../utils/exportUtils';
 
-const FILE_BASE_URL = 'http://localhost:5000';
+const FILE_BASE_URL = 'https://investment-erp.onrender.com';
 
 const Projects = () => {
     const [projects, setProjects] = useState([]);

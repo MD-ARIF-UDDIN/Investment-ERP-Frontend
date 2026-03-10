@@ -122,12 +122,14 @@ const Distributions = () => {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold text-gray-900 font-bengali">লভ্যাংশ বণ্টন</h1>
-                <button
-                    onClick={openModal}
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
-                >
-                    <Plus size={20} /> নতুন বণ্টন
-                </button>
+                {user?.role === 'Admin' && (
+                    <button
+                        onClick={openModal}
+                        className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
+                    >
+                        <Plus size={20} /> নতুন বণ্টন
+                    </button>
+                )}
             </div>
 
             <div className="bg-white shadow rounded-lg overflow-hidden">

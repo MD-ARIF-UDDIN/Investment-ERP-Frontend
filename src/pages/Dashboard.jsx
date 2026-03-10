@@ -57,10 +57,11 @@ const Dashboard = () => {
 
     useEffect(() => {
         const fetchSummary = async () => {
-            if (user?.role !== 'Admin') {
-                setLoading(false);
-                return;
-            }
+            // Allow members to view summary
+            // if (user?.role !== 'Admin') {
+            //     setLoading(false);
+            //     return;
+            // }
             try {
                 const { data } = await api.get('/reports/summary');
                 setSummary(data);
@@ -118,31 +119,10 @@ const Dashboard = () => {
         </div>
     );
 
-    if (user?.role !== 'Admin') {
-        return (
-            <div className="max-w-4xl mx-auto space-y-8 py-8 px-4">
-                <div className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-indigo-700 rounded-[2rem] p-10 text-white shadow-2xl">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                    <div className="relative z-10 space-y-4">
-                        <h1 className="text-4xl font-black font-bengali leading-tight tracking-tight">আসসালামু আলাইকুম,<br />{user.name}</h1>
-                        <p className="text-primary-100 text-lg font-medium font-bengali max-w-md opacity-90">আপনার স্বপ্নের বাতিঘর পোর্টালে স্বাগতম। আপনার ব্যক্তিগত লেনদেন এবং প্রকল্পের তথ্য দেখতে বাম পাশের মেনু ব্যবহার করুন।</p>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-bengali">
-                    <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-6">
-                        <div className="p-4 bg-green-50 text-green-600 rounded-2xl">
-                            <Wallet size={32} />
-                        </div>
-                        <div>
-                            <p className="text-gray-500 font-bold uppercase text-xs tracking-widest mb-1">যেকোনো প্রশ্ন?</p>
-                            <h4 className="text-xl font-black text-gray-900">সহযোগিতার জন্য এডমিনের সাথে যোগাযোগ করুন</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    // Show welcome message to everyone but don't block the rest of the dashboard
+    // if (user?.role !== 'Admin') {
+    //     return ( ... )
+    // }
 
     return (
         <div className="space-y-10 pb-10">

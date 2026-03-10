@@ -37,7 +37,8 @@ const Reports = () => {
     const [projectReport, setProjectReport] = useState([]);
 
     const fetchLogs = async (page = 1) => {
-        if (user?.role !== 'Admin') return;
+        // Allow members to view logs too
+        // if (user?.role !== 'Admin') return;
         try {
             setLoading(true);
             const { data } = await api.get(`/logs?page=${page}&limit=50`);
@@ -51,7 +52,8 @@ const Reports = () => {
     };
 
     const fetchProfitData = async () => {
-        if (user?.role !== 'Admin') return;
+        // Allow members
+        // if (user?.role !== 'Admin') return;
         try {
             setLoading(true);
             let url = '/reports/profit?';
@@ -77,7 +79,8 @@ const Reports = () => {
     };
 
     const fetchLedgerData = async () => {
-        if (user?.role !== 'Admin') return;
+        // Allow members
+        // if (user?.role !== 'Admin') return;
         try {
             setLoading(true);
             const { data } = await api.get('/members');
@@ -92,7 +95,8 @@ const Reports = () => {
     };
 
     const fetchProjectReport = async () => {
-        if (user?.role !== 'Admin') return;
+        // Allow members
+        // if (user?.role !== 'Admin') return;
         try {
             setLoading(true);
             let url = `/reports/projects?type=${filterType}&month=${selectedMonth}&year=${selectedYear}`;
@@ -264,9 +268,10 @@ const Reports = () => {
         }
     };
 
-    if (user?.role !== 'Admin') {
-        return <div className="p-8 text-center text-red-600 font-bold font-bengali">এই পেজে আপনার প্রবেশাধিকার নেই।</div>;
-    }
+    // Remove hard block
+    // if (user?.role !== 'Admin') {
+    //     return <div className="p-8 text-center text-red-600 font-bold font-bengali">এই পেজে আপনার প্রবেশাধিকার নেই।</div>;
+    // }
 
     return (
         <div className="space-y-6">

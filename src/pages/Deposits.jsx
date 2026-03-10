@@ -60,6 +60,7 @@ const Deposits = () => {
     // Filter State
     const [filters, setFilters] = useState({
         member: '',
+        project: '',
         month: '',
         year: new Date().getFullYear().toString()
     });
@@ -80,13 +81,14 @@ const Deposits = () => {
         { value: '12', label: 'ডিসেম্বর' }
     ];
 
-    const FILE_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const FILE_BASE_URL = import.meta.env.VITE_API_URL || 'https://investment-erp.onrender.com';
 
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
             const params = {};
             if (filters.member) params.member = filters.member;
+            if (filters.project) params.project = filters.project;
             if (filters.month) params.month = filters.month;
             if (filters.year) params.year = filters.year;
 
@@ -116,6 +118,7 @@ const Deposits = () => {
     const resetFilters = () => {
         setFilters({
             member: '',
+            project: '',
             month: '',
             year: new Date().getFullYear().toString()
         });
@@ -308,6 +311,23 @@ const Deposits = () => {
                         </select>
                     </div>
 
+                    <div className="flex-1 min-w-[200px]">
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2 font-bengali">
+                            <Banknote size={12} /> প্রকল্প ফিল্টার
+                        </label>
+                        <select
+                            name="project"
+                            value={filters.project}
+                            onChange={handleFilterChange}
+                            className="w-full bg-gray-50 border-none rounded-xl text-sm font-bold p-3 focus:ring-2 focus:ring-primary-100 transition-all font-bengali"
+                        >
+                            <option value="">সকল প্রকল্প</option>
+                            {projects.map(p => (
+                                <option key={p._id} value={p._id}>{p.name}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     <div className="w-40">
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2 font-bengali">
                             <Calendar size={12} /> মাস
@@ -353,10 +373,10 @@ const Deposits = () => {
                 </div>
 
                 {/* Filter Status Summary */}
-                {(filters.member || filters.month) && (
+                {(filters.member || filters.project || filters.month) && (
                     <div className="mt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary-600">
                         <CheckCircle2 size={12} />
-                        ফিল্টার সক্রিয়: {filters.member ? members.find(m => m._id === filters.member)?.name : 'সকল সদস্য'}
+                        ফিল্টার সক্রিয়: {filters.member ? members.find(m => m._id === filters.member)?.name : (filters.project ? projects.find(p => p._id === filters.project)?.name : 'সকল')}
                         {filters.month ? ` • ${months.find(m => m.value === filters.month)?.label}` : ''}
                         {` • ${filters.year}`}
                     </div>

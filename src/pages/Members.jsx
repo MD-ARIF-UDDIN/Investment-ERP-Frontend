@@ -10,7 +10,7 @@ import Modal from '../components/Modal';
 import { FileSpreadsheet, FileText as FilePdf, Plus, Edit2, Trash2, Eye, Info, Contact, UserRound, Phone, MapPin, IdCard, History } from 'lucide-react';
 import { exportToPDF, exportToExcel } from '../utils/exportUtils';
 
-const FILE_BASE_URL = 'http://localhost:5000';
+const FILE_BASE_URL = 'https://investment-erp.onrender.com';
 
 const Members = () => {
     const [members, setMembers] = useState([]);
@@ -354,7 +354,7 @@ const Members = () => {
                                     <th className="px-6 py-4 text-left text-base font-bold text-gray-700 tracking-wider">লভ্যাংশ (৳)</th>
                                     <th className="px-6 py-4 text-left text-base font-bold text-gray-700 tracking-wider">স্ট্যাটাস</th>
                                     <th className="px-6 py-4 text-left text-sm font-bold text-gray-500 tracking-wider">এন্ট্রি তথ্য</th>
-                                    {user?.role === 'Admin' && <th className="px-6 py-4 text-right text-base font-bold text-gray-700 tracking-wider">অ্যাকশন</th>}
+                                    <th className="px-6 py-4 text-right text-base font-bold text-gray-700 tracking-wider">অ্যাকশন</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200 font-bengali">
@@ -393,25 +393,27 @@ const Members = () => {
                                             <div>তারিখ: {new Date(member.createdAt).toLocaleString('bn-BD', { dateStyle: 'short', timeStyle: 'short' })}</div>
                                             {member.updatedBy && <div className="text-blue-400">আপডেট: {member.updatedBy?.name}</div>}
                                         </td>
-                                        {user?.role === 'Admin' && (
-                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <button onClick={() => handleViewIdCard(member)} className="text-green-600 hover:text-green-900 mx-2" title="Generate ID Card">
-                                                    <Contact size={22} />
-                                                </button>
-                                                <button onClick={() => handleViewHistory(member)} className="text-orange-600 hover:text-orange-900 mx-2" title="Deposit History">
-                                                    <History size={22} />
-                                                </button>
-                                                <button onClick={() => handleViewDetails(member)} className="text-blue-600 hover:text-blue-900 mx-2" title="Details">
-                                                    <Info size={22} />
-                                                </button>
-                                                <button onClick={() => handleEdit(member)} className="text-indigo-600 hover:text-indigo-900 mx-2" title="Edit">
-                                                    <Edit2 size={20} />
-                                                </button>
-                                                <button onClick={() => setDeleteModal({ isOpen: true, id: member._id })} className="text-red-600 hover:text-red-900 mx-2" title="Delete">
-                                                    <Trash2 size={20} />
-                                                </button>
-                                            </td>
-                                        )}
+                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button onClick={() => handleViewIdCard(member)} className="text-green-600 hover:text-green-900 mx-2" title="Generate ID Card">
+                                                <Contact size={22} />
+                                            </button>
+                                            <button onClick={() => handleViewHistory(member)} className="text-orange-600 hover:text-orange-900 mx-2" title="Deposit History">
+                                                <History size={22} />
+                                            </button>
+                                            <button onClick={() => handleViewDetails(member)} className="text-blue-600 hover:text-blue-900 mx-2" title="Details">
+                                                <Info size={22} />
+                                            </button>
+                                            {user?.role === 'Admin' && (
+                                                <>
+                                                    <button onClick={() => handleEdit(member)} className="text-indigo-600 hover:text-indigo-900 mx-2" title="Edit">
+                                                        <Edit2 size={20} />
+                                                    </button>
+                                                    <button onClick={() => setDeleteModal({ isOpen: true, id: member._id })} className="text-red-600 hover:text-red-900 mx-2" title="Delete">
+                                                        <Trash2 size={20} />
+                                                    </button>
+                                                </>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))}
                                 {members.length === 0 && (

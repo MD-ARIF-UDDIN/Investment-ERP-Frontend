@@ -80,20 +80,23 @@ const Users = () => {
         }
     };
 
-    if (currentUser?.role !== 'Admin') {
-        return <div className="p-8 text-center text-red-600 font-bold font-bengali">এই পেজে আপনার প্রবেশাধিকার নেই।</div>;
-    }
+    // Remove hard block to allow view-only access
+    // if (currentUser?.role !== 'Admin') {
+    //     return <div className="p-8 text-center text-red-600 font-bold font-bengali">এই পেজে আপনার প্রবেশাধিকার নেই।</div>;
+    // }
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold text-gray-900 font-bengali">ব্যবহারকারী ব্যবস্থাপনা</h1>
-                <button
-                    onClick={() => { setEditId(null); setFormData({ name: '', email: '', password: '', role: 'Member' }); setIsModalOpen(true); }}
-                    className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-                >
-                    <Plus size={20} /> + Add User
-                </button>
+                {currentUser?.role === 'Admin' && (
+                    <button
+                        onClick={() => { setEditId(null); setFormData({ name: '', email: '', password: '', role: 'Member' }); setIsModalOpen(true); }}
+                        className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                    >
+                        <Plus size={20} /> + Add User
+                    </button>
+                )}
             </div>
 
             {/* Info banner */}
@@ -164,7 +167,7 @@ const Users = () => {
                                     <th className="px-6 py-4 text-left text-base font-bold text-gray-700 tracking-wider">ইমেইল</th>
                                     <th className="px-6 py-4 text-left text-base font-bold text-gray-700 tracking-wider">ভূমিকা</th>
                                     <th className="px-6 py-4 text-left text-sm font-bold text-gray-500 tracking-wider">এন্ট্রি তথ্য</th>
-                                    <th className="px-6 py-4 text-right text-base font-bold text-gray-700 tracking-wider">অ্যাকশন</th>
+                                    {currentUser?.role === 'Admin' && <th className="px-6 py-4 text-right text-base font-bold text-gray-700 tracking-wider">অ্যাকশন</th>}
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200 font-bengali">
@@ -193,19 +196,21 @@ const Users = () => {
                                             <div>তারিখ: {new Date(u.createdAt).toLocaleString('bn-BD', { dateStyle: 'short', timeStyle: 'short' })}</div>
                                             {u.updatedBy && <div className="text-blue-400">আপডেট: {u.updatedBy?.name}</div>}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button onClick={() => handleEdit(u)} className="text-indigo-600 hover:text-indigo-900 mx-2" title="Edit">
-                                                <Edit2 size={18} />
-                                            </button>
-                                            <button
-                                                onClick={() => setDeleteModal({ isOpen: true, id: u._id })}
-                                                disabled={u._id === currentUser._id}
-                                                className={`mx-2 ${u._id === currentUser._id ? 'text-gray-300 cursor-not-allowed' : 'text-red-600 hover:text-red-900'}`}
-                                                title={u._id === currentUser._id ? 'নিজের অ্যাকাউন্ট মোছা যাবে না' : 'Delete'}
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </td>
+                                        {currentUser?.role === 'Admin' && (
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <button onClick={() => handleEdit(u)} className="text-indigo-600 hover:text-indigo-900 mx-2" title="Edit">
+                                                    <Edit2 size={18} />
+                                                </button>
+                                                <button
+                                                    onClick={() => setDeleteModal({ isOpen: true, id: u._id })}
+                                                    disabled={u._id === currentUser._id}
+                                                    className={`mx-2 ${u._id === currentUser._id ? 'text-gray-300 cursor-not-allowed' : 'text-red-600 hover:text-red-900'}`}
+                                                    title={u._id === currentUser._id ? 'নিজের অ্যাকাউন্ট মোছা যাবে না' : 'Delete'}
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                                 {users.length === 0 && (

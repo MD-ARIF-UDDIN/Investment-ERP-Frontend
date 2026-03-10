@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // Change this in production
+    baseURL: 'https://investment-erp.onrender.com/api', // Change this in production
 });
 
 // Add a request interceptor to include the auth token
