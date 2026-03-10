@@ -35,6 +35,7 @@ const Reports = () => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [projectReport, setProjectReport] = useState([]);
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
 
     const fetchLogs = async (page = 1) => {
         // Allow members to view logs too
@@ -388,7 +389,15 @@ const Reports = () => {
 
             {activeTab === 'profit' && (
                 <div className="space-y-6">
-                    <div className="bg-white p-4 rounded-lg shadow flex flex-wrap items-center gap-4">
+                    <button
+                        onClick={() => setShowMobileFilters(!showMobileFilters)}
+                        className="sm:hidden w-full flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-4 py-3 rounded-2xl font-bold font-bengali shadow-sm active:scale-95 transition-all"
+                    >
+                        <Filter size={18} className="text-primary-500" />
+                        ফিল্টার {showMobileFilters ? 'বন্ধ করুন' : 'করুন'}
+                    </button>
+
+                    <div className={`bg-white p-4 rounded-lg shadow flex flex-wrap items-center gap-4 transition-all duration-300 overflow-hidden ${showMobileFilters ? 'max-h-[500px] opacity-100' : 'max-h-0 sm:max-h-[500px] opacity-0 sm:opacity-100 py-0 sm:py-4 border-none sm:border-solid'}`}>
                         <div className="flex items-center gap-2">
                             <Filter size={20} className="text-gray-400" />
                             <select
@@ -633,7 +642,15 @@ const Reports = () => {
 
             {activeTab === 'project' && (
                 <div className="space-y-6">
-                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                    <button
+                        onClick={() => setShowMobileFilters(!showMobileFilters)}
+                        className="sm:hidden w-full flex items-center justify-center gap-2 bg-white text-gray-600 border border-gray-200 px-4 py-3 rounded-2xl font-bold font-bengali shadow-sm active:scale-95 transition-all"
+                    >
+                        <Filter size={18} className="text-primary-500" />
+                        ফিল্টার {showMobileFilters ? 'বন্ধ করুন' : 'করুন'}
+                    </button>
+
+                    <div className={`bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-6 transition-all duration-300 overflow-hidden ${showMobileFilters ? 'max-h-[500px] opacity-100' : 'max-h-0 sm:max-h-[500px] opacity-0 sm:opacity-100 py-0 sm:py-5 border-none sm:border-solid'}`}>
                         <div className="flex flex-wrap items-center gap-6">
                             <h2 className="text-lg font-black text-gray-800 font-bengali">প্রকল্প ভিত্তিক লাভ-ক্ষতি রিপোর্ট</h2>
                             <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">

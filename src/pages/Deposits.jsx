@@ -65,6 +65,7 @@ const Deposits = () => {
         month: '',
         year: new Date().getFullYear().toString()
     });
+    const [showMobileFilters, setShowMobileFilters] = useState(false);
 
     const years = Array.from({ length: 5 }, (_, i) => (new Date().getFullYear() - i).toString());
     const months = [
@@ -287,11 +288,18 @@ const Deposits = () => {
                             + নতুন জমা
                         </button>
                     )}
+                    <button
+                        onClick={() => setShowMobileFilters(!showMobileFilters)}
+                        className={`sm:hidden flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold font-bengali transition-all active:scale-95 ${showMobileFilters ? 'bg-primary-50 text-primary-600 border border-primary-200' : 'bg-white text-gray-600 border border-gray-200'}`}
+                    >
+                        <Filter size={18} />
+                        ফিল্টার {showMobileFilters ? 'বন্ধ করুন' : 'করুন'}
+                    </button>
                 </div>
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6">
+            <div className={`bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-6 transition-all duration-300 overflow-hidden ${showMobileFilters ? 'max-h-[1000px] opacity-100 mb-6' : 'max-h-0 sm:max-h-[1000px] opacity-0 sm:opacity-100 py-0 sm:py-5 mb-0 sm:mb-6 border-none sm:border-solid'}`}>
                 <div className="flex flex-wrap items-end gap-4">
                     <div className="flex-1 min-w-[200px]">
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2 font-bengali">
