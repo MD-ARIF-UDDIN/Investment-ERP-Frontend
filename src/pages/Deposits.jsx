@@ -3,6 +3,7 @@ import api from '../utils/api';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../context/AuthContext';
 import { useLoading } from '../context/LoadingContext';
+import { FILE_BASE_URL } from '../config';
 import ConfirmModal from '../components/ConfirmModal';
 import Modal from '../components/Modal';
 import {
@@ -80,8 +81,6 @@ const Deposits = () => {
         { value: '11', label: 'নভেম্বর' },
         { value: '12', label: 'ডিসেম্বর' }
     ];
-
-    const FILE_BASE_URL = import.meta.env.VITE_API_URL || 'https://investment-erp.onrender.com';
 
     const fetchData = useCallback(async () => {
         try {
@@ -264,25 +263,25 @@ const Deposits = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-semibold text-gray-900 font-bengali">জমার তালিকা</h1>
-                <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <h1 className="text-2xl font-black text-gray-900 font-bengali">জমার তালিকা</h1>
+                <div className="flex flex-wrap gap-2">
                     <button
                         onClick={() => handleExport('excel')}
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
+                        className="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-emerald-100 font-bengali active:scale-95"
                     >
-                        <FileSpreadsheet size={20} /> Excel
+                        <FileSpreadsheet size={18} /> Excel
                     </button>
                     <button
                         onClick={() => handleExport('pdf')}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
+                        className="flex-1 sm:flex-none justify-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-rose-100 font-bengali active:scale-95"
                     >
-                        <FilePdf size={20} /> PDF
+                        <FilePdf size={18} /> PDF
                     </button>
                     {user?.role === 'Admin' && (
                         <button
                             onClick={openModalForNew}
-                            className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
+                            className="w-full sm:w-auto justify-center bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-primary-100 font-bengali active:scale-95"
                         >
                             <Plus size={20} />
                             + নতুন জমা

@@ -275,50 +275,40 @@ const Reports = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-semibold text-gray-900 font-bengali">রিপোর্ট এবং এনালিটিক্স</h1>
-                <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
-                    <button
-                        onClick={() => setActiveTab('audit')}
-                        className={`px-4 py-2 rounded-md font-bengali transition-colors ${activeTab === 'audit' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-600 hover:text-gray-900'}`}
-                    >
-                        অডিট লগ
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('profit')}
-                        className={`px-4 py-2 rounded-md font-bengali transition-colors ${activeTab === 'profit' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-600 hover:text-gray-900'}`}
-                    >
-                        লভ্যাংশ রিপোর্ট
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('ledger')}
-                        className={`px-4 py-2 rounded-md font-bengali transition-colors ${activeTab === 'ledger' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-600 hover:text-gray-900'}`}
-                    >
-                        সদস্য লেজার
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('project')}
-                        className={`px-4 py-2 rounded-md font-bengali transition-colors ${activeTab === 'project' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-600 hover:text-gray-900'}`}
-                    >
-                        প্রকল্প রিপোর্ট
-                    </button>
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+                <h1 className="text-2xl font-black text-gray-900 font-bengali">রিপোর্ট এবং এনালিটিক্স</h1>
+                <div className="flex bg-gray-100/50 p-1 rounded-2xl overflow-x-auto no-scrollbar">
+                    {[
+                        { id: 'audit', label: 'অডিট লগ' },
+                        { id: 'profit', label: 'লভ্যাংশ রিপোর্ট' },
+                        { id: 'ledger', label: 'সদস্য লেজার' },
+                        { id: 'project', label: 'প্রকল্প রিপোর্ট' }
+                    ].map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`px-5 py-2.5 rounded-xl font-bold font-bengali transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white shadow-xl text-primary-600' : 'text-gray-500 hover:text-gray-900'}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
             {activeTab === 'audit' && (
                 <div className="bg-white shadow rounded-lg overflow-hidden">
-                    <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-                        <h2 className="font-semibold text-gray-700 font-bengali">সিস্টেম অ্যাক্টিভিটি লগ (সর্বশেষ)</h2>
+                    <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                        <h2 className="font-black text-gray-700 font-bengali">সিস্টেম অ্যাক্টিভিটি লগ (সর্বশেষ)</h2>
                         <div className="flex gap-2">
                             <button
                                 onClick={() => exportLogs('excel')}
-                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors font-bengali"
+                                className="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm transition-all shadow-lg shadow-emerald-100 font-bengali active:scale-95"
                             >
                                 <FileSpreadsheet size={16} /> Excel
                             </button>
                             <button
                                 onClick={() => exportLogs('pdf')}
-                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors font-bengali"
+                                className="flex-1 sm:sm:flex-none justify-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm transition-all shadow-lg shadow-rose-100 font-bengali active:scale-95"
                             >
                                 <FilePdf size={16} /> PDF
                             </button>
@@ -485,20 +475,20 @@ const Reports = () => {
                     </div>
 
                     <div className="bg-white shadow rounded-lg overflow-hidden">
-                        <div className="p-4 border-b bg-gray-50 flex justify-between items-center">
-                            <h2 className="font-semibold text-gray-700 font-bengali">সদস্যদের লভ্যাংশ রিপোর্ট</h2>
+                        <div className="p-5 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                            <h2 className="font-black text-gray-700 font-bengali">সদস্যদের লভ্যাংশ রিপোর্ট</h2>
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => exportProfit('excel')}
-                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
+                                    className="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm transition-all shadow-lg shadow-emerald-100 font-bengali active:scale-95"
                                 >
-                                    <FileSpreadsheet size={20} /> Excel
+                                    <FileSpreadsheet size={16} /> Excel
                                 </button>
                                 <button
                                     onClick={() => exportProfit('pdf')}
-                                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
+                                    className="flex-1 sm:sm:flex-none justify-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm transition-all shadow-lg shadow-rose-100 font-bengali active:scale-95"
                                 >
-                                    <FilePdf size={20} /> PDF
+                                    <FilePdf size={16} /> PDF
                                 </button>
                             </div>
                         </div>
@@ -540,7 +530,7 @@ const Reports = () => {
             {activeTab === 'ledger' && (
                 <div className="space-y-6">
                     <div className="bg-white shadow rounded-[2rem] overflow-hidden border border-gray-100">
-                        <div className="p-8 border-b bg-gray-50/50 flex justify-between items-center">
+                        <div className="p-6 sm:p-8 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
                             <div>
                                 <h2 className="text-xl font-black text-gray-900 font-bengali">সদস্য ফাইনানশিয়াল লেজার</h2>
                                 <p className="text-xs text-gray-400 font-black uppercase tracking-widest mt-1">Full Member Transaction Ledger</p>
@@ -548,13 +538,13 @@ const Reports = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => exportLedger('excel')}
-                                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all font-bengali shadow-lg shadow-green-100 active:scale-95"
+                                    className="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all font-bengali shadow-lg shadow-emerald-100 active:scale-95 text-sm"
                                 >
                                     <FileSpreadsheet size={18} /> Excel
                                 </button>
                                 <button
                                     onClick={() => exportLedger('pdf')}
-                                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl flex items-center gap-2 transition-all font-bengali shadow-lg shadow-red-100 active:scale-95"
+                                    className="flex-1 sm:flex-none justify-center bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 transition-all font-bengali shadow-lg shadow-rose-100 active:scale-95 text-sm"
                                 >
                                     <FilePdf size={18} /> PDF
                                 </button>
@@ -643,15 +633,15 @@ const Reports = () => {
 
             {activeTab === 'project' && (
                 <div className="space-y-6">
-                    <div className="bg-white p-4 rounded-lg shadow flex flex-wrap items-center justify-between gap-4">
-                        <div className="flex items-center gap-4">
-                            <h2 className="font-semibold text-gray-700 font-bengali">প্রকল্প ভিত্তিক লাভ-ক্ষতি রিপোর্ট</h2>
-                            <div className="flex items-center gap-2">
-                                <Filter size={18} className="text-gray-400" />
+                    <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:justify-between md:items-center gap-6">
+                        <div className="flex flex-wrap items-center gap-6">
+                            <h2 className="text-lg font-black text-gray-800 font-bengali">প্রকল্প ভিত্তিক লাভ-ক্ষতি রিপোর্ট</h2>
+                            <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100">
+                                <Filter size={18} className="text-primary-500" />
                                 <select
                                     value={filterType}
                                     onChange={(e) => setFilterType(e.target.value)}
-                                    className="border rounded-md px-2 py-1 text-xs font-bengali"
+                                    className="bg-transparent border-none focus:ring-0 text-sm font-bold text-gray-600 font-bengali cursor-pointer"
                                 >
                                     <option value="all">সব সময়</option>
                                     <option value="month">মাসিক</option>
@@ -665,7 +655,7 @@ const Reports = () => {
                                     <select
                                         value={selectedMonth}
                                         onChange={(e) => setSelectedMonth(e.target.value)}
-                                        className="border rounded-md px-2 py-1 text-xs font-bengali"
+                                        className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-600 font-bengali"
                                     >
                                         {Array.from({ length: 12 }, (_, i) => (
                                             <option key={i + 1} value={i + 1}>
@@ -676,7 +666,7 @@ const Reports = () => {
                                     <select
                                         value={selectedYear}
                                         onChange={(e) => setSelectedYear(e.target.value)}
-                                        className="border rounded-md px-2 py-1 text-xs font-bengali"
+                                        className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-600 font-bengali"
                                     >
                                         {Array.from({ length: 5 }, (_, i) => (
                                             <option key={i} value={new Date().getFullYear() - i}>
@@ -688,35 +678,33 @@ const Reports = () => {
                             )}
 
                             {filterType === 'year' && (
-                                <div className="flex items-center gap-2">
-                                    <select
-                                        value={selectedYear}
-                                        onChange={(e) => setSelectedYear(e.target.value)}
-                                        className="border rounded-md px-2 py-1 text-xs font-bengali"
-                                    >
-                                        {Array.from({ length: 5 }, (_, i) => (
-                                            <option key={i} value={new Date().getFullYear() - i}>
-                                                {new Date().getFullYear() - i}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
+                                <select
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(e.target.value)}
+                                    className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-600 font-bengali"
+                                >
+                                    {Array.from({ length: 5 }, (_, i) => (
+                                        <option key={i} value={new Date().getFullYear() - i}>
+                                            {new Date().getFullYear() - i}
+                                        </option>
+                                    ))}
+                                </select>
                             )}
 
                             {filterType === 'custom' && (
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-3">
                                     <input
                                         type="date"
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
-                                        className="border rounded-md px-2 py-1 text-xs"
+                                        className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-600"
                                     />
-                                    <span className="text-gray-400 text-xs">থেকে</span>
+                                    <span className="text-gray-400 font-bold font-bengali">থেকে</span>
                                     <input
                                         type="date"
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
-                                        className="border rounded-md px-2 py-1 text-xs"
+                                        className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-bold text-gray-600"
                                     />
                                 </div>
                             )}
@@ -724,15 +712,15 @@ const Reports = () => {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => exportProjectReport('excel')}
-                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors font-bengali"
+                                className="flex-1 sm:flex-none justify-center bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 text-sm font-black transition-all shadow-lg shadow-emerald-100 font-bengali active:scale-95"
                             >
-                                <FileSpreadsheet size={16} /> Excel
+                                <FileSpreadsheet size={18} /> Excel
                             </button>
                             <button
                                 onClick={() => exportProjectReport('pdf')}
-                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg flex items-center gap-2 text-sm transition-colors font-bengali"
+                                className="flex-1 sm:flex-none justify-center bg-rose-600 hover:bg-rose-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 text-sm font-black transition-all shadow-lg shadow-rose-100 font-bengali active:scale-95"
                             >
-                                <FilePdf size={16} /> PDF
+                                <FilePdf size={18} /> PDF
                             </button>
                         </div>
                     </div>

@@ -120,12 +120,12 @@ const Distributions = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-semibold text-gray-900 font-bengali">লভ্যাংশ বণ্টন</h1>
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                <h1 className="text-2xl font-black text-gray-900 font-bengali">লভ্যাংশ বণ্টন</h1>
                 {user?.role === 'Admin' && (
                     <button
                         onClick={openModal}
-                        className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bengali"
+                        className="w-full sm:w-auto justify-center bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-primary-100 font-bengali active:scale-95 text-base"
                     >
                         <Plus size={20} /> নতুন বণ্টন
                     </button>
