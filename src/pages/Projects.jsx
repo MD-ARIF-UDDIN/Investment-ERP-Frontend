@@ -21,7 +21,8 @@ const Projects = () => {
     const [projectFormData, setProjectFormData] = useState({
         name: '', totalInvestment: '', startDate: new Date().toISOString().split('T')[0],
         endDate: '', status: 'Running', projectType: 'Other', description: '',
-        location: '', expectedReturn: '', responsiblePerson: '', contactPhone: ''
+        location: '', expectedReturn: '', responsiblePerson: '', contactPhone: '',
+        returnPercentage: '', returnMonths: '1'
     });
     const [imageFile, setImageFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -60,7 +61,8 @@ const Projects = () => {
             setProjectFormData({
                 name: '', totalInvestment: '', startDate: new Date().toISOString().split('T')[0],
                 endDate: '', status: 'Running', projectType: 'Other', description: '',
-                location: '', expectedReturn: '', responsiblePerson: '', contactPhone: ''
+                location: '', expectedReturn: '', responsiblePerson: '', contactPhone: '',
+                returnPercentage: '', returnMonths: '1'
             });
             setImageFile(null);
             setImagePreview(null);
@@ -90,7 +92,9 @@ const Projects = () => {
             location: project.location || '',
             expectedReturn: project.expectedReturn || '',
             responsiblePerson: project.responsiblePerson || '',
-            contactPhone: project.contactPhone || ''
+            contactPhone: project.contactPhone || '',
+            returnPercentage: project.returnPercentage || '',
+            returnMonths: project.returnMonths || '1'
         });
         setImagePreview(project.image ? `${FILE_BASE_URL}${project.image}` : null);
         setImageFile(null);
@@ -163,7 +167,7 @@ const Projects = () => {
                     </button>
                     {user?.role === 'Admin' && (
                         <button
-                            onClick={() => { setEditProjectId(null); setProjectFormData({ name: '', totalInvestment: '', startDate: new Date().toISOString().split('T')[0], endDate: '', status: 'Running', projectType: 'Other', description: '', location: '', expectedReturn: '', responsiblePerson: '', contactPhone: '' }); setIsProjectModalOpen(true); }}
+                            onClick={() => { setEditProjectId(null); setProjectFormData({ name: '', totalInvestment: '', startDate: new Date().toISOString().split('T')[0], endDate: '', status: 'Running', projectType: 'Other', description: '', location: '', expectedReturn: '', responsiblePerson: '', contactPhone: '', returnPercentage: '', returnMonths: '1' }); setIsProjectModalOpen(true); }}
                             className="w-full sm:w-auto justify-center bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-primary-100 font-bengali active:scale-95"
                         >
                             <Plus size={20} /> + New Project
@@ -207,6 +211,14 @@ const Projects = () => {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 font-bengali">প্রত্যাশিত রিটার্ন (৳)</label>
                                     <input type="number" min="0" value={projectFormData.expectedReturn} onChange={e => setProjectFormData({...projectFormData, expectedReturn: e.target.value})} className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200 p-3 border text-sm transition-all" placeholder="ঐচ্ছিক" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 font-bengali">রিটার্ন হার (%)</label>
+                                    <input type="number" step="0.1" value={projectFormData.returnPercentage} onChange={e => setProjectFormData({...projectFormData, returnPercentage: e.target.value})} className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200 p-3 border text-sm transition-all" placeholder="যেমন: ২০" />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 font-bengali">কত মাসে রিটার্ন</label>
+                                    <input type="number" min="1" value={projectFormData.returnMonths} onChange={e => setProjectFormData({...projectFormData, returnMonths: e.target.value})} className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200 p-3 border text-sm transition-all" placeholder="যেমন: ১২" />
                                 </div>
                             </div>
                         </div>
@@ -403,21 +415,43 @@ const Projects = () => {
                                             <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">মোট আয়</p>
                                             <p className="text-base font-black text-green-600">৳{totalReceived.toLocaleString()}</p>
                                         </div>
-                                        {project.expectedReturn && (
-                                            <div className="space-y-0.5 col-span-2">
-                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">প্রত্যাশিত রিটার্ন</p>
-                                                <p className="text-sm font-black text-indigo-600">৳{Number(project.expectedReturn).toLocaleString()}</p>
+                                        {project.returnMonths && (
+                                            <div className="space-y-0.5">
+                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">রিটার্ন সময়কাল</p>
+                                                <p className="text-sm font-black text-blue-600">{project.returnMonths} মাস</p>
+                                            </div>
+                                        )}
+                                        {project.returnPercentage && (
+                                            <div className="space-y-0.5">
+                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">রিটার্ন হার</p>
+                                                <p className="text-sm font-black text-purple-600">{project.returnPercentage}%</p>
+                                            </div>
+                                        )}
+                                        {project.returnPercentage && project.totalInvestment > 0 && (
+                                            <div className="space-y-0.5 col-span-2 border-t border-gray-50 pt-1 mt-1">
+                                                <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">মোট প্রত্যাশিত লভ্যাংশ</p>
+                                                <p className="text-base font-black text-emerald-600">৳{(project.totalInvestment * project.returnPercentage / 100).toLocaleString()}</p>
                                             </div>
                                         )}
                                     </div>
 
-                                    {/* Profit Card */}
-                                    <div className={`p-3 rounded-xl border ${project.currentProfit >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'} mb-4`}>
-                                        <div className="flex justify-between items-center">
-                                            <span className="text-sm font-bold text-gray-500 font-bengali">সামগ্রিক লাভ/ক্ষতি:</span>
-                                            <span className={`font-black text-xl ${project.currentProfit >= 0 ? 'text-green-700' : 'text-red-700'}`}>
-                                                {project.currentProfit > 0 ? '+' : ''}{project.currentProfit.toLocaleString()}৳
-                                            </span>
+                                    {/* Profit & Due Cards */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                                        <div className={`p-3 rounded-xl border ${project.currentProfit >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-gray-500 font-bengali">সামগ্রিক লাভ/ক্ষতি:</span>
+                                                <span className={`font-black text-lg ${project.currentProfit >= 0 ? 'text-green-700' : 'text-red-700'}`}>
+                                                    {project.currentProfit > 0 ? '+' : ''}{project.currentProfit.toLocaleString()}৳
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={`p-3 rounded-xl border ${project.dueAmount > 0 ? 'bg-amber-50 border-amber-100' : 'bg-green-50 border-green-100'}`}>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs font-bold text-gray-500 font-bengali">বকেয়া লভ্যাংশ:</span>
+                                                <span className={`font-black text-lg ${project.dueAmount > 0 ? 'text-amber-700' : 'text-green-700'}`}>
+                                                    {project.dueAmount.toLocaleString()}৳
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 

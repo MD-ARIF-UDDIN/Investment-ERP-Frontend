@@ -47,7 +47,10 @@ const Deposits = () => {
         amount: '',
         type: 'Monthly',
         date: new Date().toISOString().split('T')[0],
-        note: ''
+        note: '',
+        monthsPaid: '1',
+        returnPercentage: '',
+        returnMonths: '1'
     });
     const [editId, setEditId] = useState(null);
     const [deleteModal, setDeleteModal] = useState({ isOpen: false, id: null });
@@ -141,7 +144,7 @@ const Deposits = () => {
             }
             setIsModalOpen(false);
             setEditId(null);
-            setFormData({ depositFor: 'Member', memberId: '', projectId: '', amount: '', type: 'Monthly', date: new Date().toISOString().split('T')[0], note: '' });
+            setFormData({ depositFor: 'Member', memberId: '', projectId: '', amount: '', type: 'Monthly', date: new Date().toISOString().split('T')[0], note: '', monthsPaid: '1', returnPercentage: '', returnMonths: '1' });
             fetchData();
         } catch (error) {
             toast.error(error.response?.data?.message || 'জমা সংরক্ষণ করতে সমস্যা হয়েছে');
@@ -160,7 +163,10 @@ const Deposits = () => {
             amount: deposit.amount,
             type: deposit.type,
             date: new Date(deposit.date).toISOString().split('T')[0],
-            note: deposit.note || ''
+            note: deposit.note || '',
+            monthsPaid: '1',
+            returnPercentage: '',
+            returnMonths: '1'
         });
         setIsModalOpen(true);
     };
@@ -180,7 +186,7 @@ const Deposits = () => {
 
     const openModalForNew = () => {
         setEditId(null);
-        setFormData({ depositFor: 'Member', memberId: '', projectId: '', amount: '', type: 'Monthly', date: new Date().toISOString().split('T')[0], note: '' });
+        setFormData({ depositFor: 'Member', memberId: '', projectId: '', amount: '', type: 'Monthly', date: new Date().toISOString().split('T')[0], note: '', monthsPaid: '1', returnPercentage: '', returnMonths: '1' });
         setIsModalOpen(true);
     };
 
@@ -261,6 +267,45 @@ const Deposits = () => {
         const whatsappUrl = `https://wa.me/88${whatsappNumber}?text=${encodedMessage}`;
         window.open(whatsappUrl, '_blank');
     };
+
+    // Auto-calculate Project-Return
+    const [calculationInfo, setCalculationInfo] = useState({ investment: 0, monthlyReturn: 0 });
+
+    useEffect(() => {
+        if (formData.type === 'Project-Return' && formData.projectId) {
+            const calculateAmount = () => {
+                const project = projects.find(p => p._id === formData.projectId);
+                if (project && project.totalInvestment > 0) {
+                    const perc = Number(formData.returnPercentage) || project.returnPercentage || 0;
+                    const months = Number(formData.returnMonths) || project.returnMonths || 1;
+                    const mPaid = Number(formData.monthsPaid) || 1;
+                    
+                    const monthlyReturn = (project.totalInvestment * (perc / 100)) / months;
+                    const totalAmount = Math.round(monthlyReturn * mPaid);
+                    
+                    setCalculationInfo({ investment: project.totalInvestment, monthlyReturn });
+                    setFormData(prev => ({ ...prev, amount: totalAmount }));
+                } else {
+                    setCalculationInfo({ investment: 0, monthlyReturn: 0 });
+                }
+            };
+            calculateAmount();
+        }
+    }, [formData.type, formData.projectId, formData.monthsPaid, formData.returnPercentage, formData.returnMonths, projects]);
+
+    // Update default return terms when project changes
+    useEffect(() => {
+        if (formData.type === 'Project-Return' && formData.projectId) {
+            const project = projects.find(p => p._id === formData.projectId);
+            if (project) {
+                setFormData(prev => ({
+                    ...prev,
+                    returnPercentage: project.returnPercentage || '',
+                    returnMonths: project.returnMonths || '1'
+                }));
+            }
+        }
+    }, [formData.projectId, formData.type, projects]);
 
     return (
         <div className="space-y-6">
@@ -458,12 +503,40 @@ const Deposits = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <option value="Income">আয় (Income)</option>
-                                        <option value="Profit">লাভ (Profit)</option>
+                                        <option value="Project-Return">প্রকল্প রিটার্ন (Project Return)</option>
                                     </>
                                 )}
                             </select>
                         </div>
+
+                        {formData.depositFor === 'Project' && formData.type === 'Project-Return' && (
+                            <div className="bg-blue-50 p-4 rounded-xl space-y-4 border border-blue-100">
+                                <div className="flex justify-between items-center">
+                                    <h4 className="text-xs font-black text-blue-600 uppercase tracking-widest font-bengali">রিটার্ন ক্যালকুলেটর</h4>
+                                    <span className="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-full font-bold">Auto</span>
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 font-bengali">কত মাসের (পেমেন্ট)</label>
+                                    <input type="number" min="1" name="monthsPaid" value={formData.monthsPaid} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border text-sm" />
+                                </div>
+
+                                {calculationInfo.investment > 0 && (
+                                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-blue-200">
+                                        <div className="bg-white/50 p-2 rounded-lg">
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">মোট বিনিয়োগ</p>
+                                            <p className="text-sm font-black text-blue-700">৳{calculationInfo.investment.toLocaleString()}</p>
+                                        </div>
+                                        <div className="bg-white/50 p-2 rounded-lg">
+                                            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">মাসিক রিটার্ন</p>
+                                            <p className="text-sm font-black text-green-700">৳{Math.round(calculationInfo.monthlyReturn).toLocaleString()}</p>
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                <p className="text-[10px] text-blue-500 font-bengali italic">* প্রকল্পের মোট বিনিয়োগ এবং নির্ধারিত লভ্যাংশ হার থেকে স্বয়ংক্রিয়ভাবে হিসাব করা হয়েছে।</p>
+                            </div>
+                        )}
                         <div>
                             <label className="block text-base font-medium text-gray-700 font-bengali">পরিমাণ (৳)</label>
                             <input required type="number" min="1" name="amount" value={formData.amount} onChange={handleInputChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-200 p-2 border text-base" />
