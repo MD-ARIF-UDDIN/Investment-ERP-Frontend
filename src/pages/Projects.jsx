@@ -409,7 +409,7 @@ const Projects = () => {
                                     <div className="grid grid-cols-2 gap-3 mb-4">
                                         <div className="space-y-0.5">
                                             <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">বিনিয়োগ</p>
-                                            <p className="text-base font-black text-gray-900">৳{project.totalInvestment.toLocaleString()}</p>
+                                            <p className="text-base font-black text-gray-900">৳{(project.totalInvestment || 0).toLocaleString()}</p>
                                         </div>
                                         <div className="space-y-0.5">
                                             <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">মোট আয়</p>
@@ -430,7 +430,7 @@ const Projects = () => {
                                         {project.returnPercentage && project.totalInvestment > 0 && (
                                             <div className="space-y-0.5 col-span-2 border-t border-gray-50 pt-1 mt-1">
                                                 <p className="text-xs text-gray-400 font-bold uppercase tracking-wider font-bengali">মোট প্রত্যাশিত লভ্যাংশ</p>
-                                                <p className="text-base font-black text-emerald-600">৳{(project.totalInvestment * project.returnPercentage / 100).toLocaleString()}</p>
+                                                <p className="text-base font-black text-emerald-600">৳{((project.totalInvestment || 0) * (project.returnPercentage || 0) / 100).toLocaleString()}</p>
                                             </div>
                                         )}
                                     </div>

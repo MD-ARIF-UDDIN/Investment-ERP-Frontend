@@ -805,7 +805,7 @@ const Reports = () => {
                                         {projectReport.map((proj) => (
                                             <tr key={proj._id} className="hover:bg-gray-50">
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{proj.name}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{proj.totalInvestment.toLocaleString()}৳</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{(proj.totalInvestment || 0).toLocaleString()}৳</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-bold">{proj.totalRevenue.toLocaleString()}৳</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-bold">{proj.periodRevenue.toLocaleString()}৳</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -826,7 +826,7 @@ const Reports = () => {
                                     <tfoot className="bg-gray-50 font-bold font-bengali">
                                         <tr>
                                             <td className="px-6 py-4">সর্বমোট</td>
-                                            <td className="px-6 py-4">{projectReport.reduce((acc, p) => acc + p.totalInvestment, 0).toLocaleString()}৳</td>
+                                            <td className="px-6 py-4">{(projectReport.reduce((acc, p) => acc + (p.totalInvestment || 0), 0)).toLocaleString()}৳</td>
                                             <td className="px-6 py-4 text-green-600">{projectReport.reduce((acc, p) => acc + p.totalRevenue, 0).toLocaleString()}৳</td>
                                             <td className="px-6 py-4 text-blue-600">{projectReport.reduce((acc, p) => acc + p.periodRevenue, 0).toLocaleString()}৳</td>
                                             <td className="px-6 py-4 font-black">
@@ -929,7 +929,7 @@ const Reports = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-emerald-600 font-medium">{row.projectIncome?.toLocaleString() || '0'}৳</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-600 font-bold bg-blue-50/30">{(row.profit || 0).toLocaleString()}৳</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">{row.memberWithdrawal?.toLocaleString() || '0'}৳</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600 font-medium">{row.projectInvestment.toLocaleString()}৳</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-orange-600 font-medium">{(row.projectInvestment || 0).toLocaleString()}৳</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-rose-600 font-medium">{row.expense.toLocaleString()}৳</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-bold bg-indigo-50/30">{row.totalOutflow.toLocaleString()}৳</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-black text-gray-900 bg-gray-50">{row.net.toLocaleString()}৳</td>
