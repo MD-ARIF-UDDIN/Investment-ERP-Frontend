@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://investment-erp.onrender.com';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://investment-erp-mb9o.onrender.com';
 
 export const API_BASE_URL = `${BASE_URL}/api`;
 export const FILE_BASE_URL = BASE_URL;
